@@ -3,13 +3,13 @@ Icon Override
 18OCT2021
 This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 Author: RavenAscendant
-Provide a location to specifiy alternitive item icons that should be less prone to conflicts
+Provide a location to specify alternative item icons that should be less prone to conflicts
 
 covers icons(icons_texture, inv_grid_x,inv_grid_y,inv_grid_width,inv_grid_height), 
 icon layers (1icon_layer,1icon_layer_scale, 1icon_layer_x, 1icon_layer_y ), 
 and upgrade icons (upgr_icon_path, upgr_icon_width, upgr_icon_height).
 
-This script does not make an MCM menu. It leerages MCM to load early enough to modify the New Game screens.
+This script does not make an MCM menu. It leverages MCM to load early enough to modify the New Game screens.
 --]]
 
 

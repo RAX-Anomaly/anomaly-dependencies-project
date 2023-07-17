@@ -7,11 +7,11 @@ Author: RavenAscendant
 --]]
 
 function pr(txt, ...)
-    --  printf("RAXPH: "..txt, ...)
+      --printf("RAXPH: "..txt, ...)
 end
 
 local persistent_highlights = {}
-
+local sorted_names = {}
 
 --functor should return an ARGB for the highlight color. recomend low alpha values. name is mostly for aplhabetical priority. will not conflict. there is no unregister, just retun nil if you don't want to use. 
 function register(name, functor)
@@ -19,18 +19,21 @@ function register(name, functor)
 
     if not persistent_highlights[name] then
         persistent_highlights[name] = {}
+		sorted_names[#sorted_names + 1] = name
+		table.sort(sorted_names)
     end
 
     table.insert(persistent_highlights[name], functor)
+	
 end
 
 function utils_ui.UICellItem:GetPersistantHighlight()
     local clr = nil
 
-    for key, name in pairs(persistent_highlights) do
-        for _, functor in pairs(name) do
+    for _, name in ipairs(sorted_names) do
+        for __, functor in ipairs(persistent_highlights[name]) do
             clr = functor and functor(self) or clr
-            pr(key .. ":" .. tostring(clr) .. ":" .. tostring(self.section))
+            pr("%s : %s : %s", name , clr ,self.section)
         end
     end
 

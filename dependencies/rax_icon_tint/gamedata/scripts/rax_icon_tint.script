@@ -1,0 +1,77 @@
+--[[
+Dynamic tint for anomaly inventory. 
+6jan2022 
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
+Author: RavenAscendant
+--]]
+
+function pr(txt, ...)
+    --  printf("RAXPH: "..txt, ...)
+end
+
+local icon_colors = {}
+local sorted_names = {}
+
+--functor should return an ARGB for the tint color. recommend low alpha values.   
+function register(name, functor)
+    if not name then return end 
+    if not icon_colors[name] then
+        icon_colors[name] = {}
+		sorted_names[#sorted_names + 1] = name
+		table.sort(sorted_names)
+    end
+
+    table.insert(icon_colors[name], functor)
+
+	icon_colors[name] = functor
+end
+
+local base_Colorize = utils_ui.UICellItem.Colorize
+
+function utils_ui.UICellItem:Colorize(clr_id)
+	base_Colorize(self, clr_id)
+	
+	if clr_id ~= "def" then return end -- only gong to change it when not changed by base script
+	local clr
+	for _, name in ipairs(sorted_names)
+		for __, functor in ipairs(icon_colors[name]) do
+			clr = functor(self) or clr
+		end
+	end
+	if not clr then return end
+	
+	
+	if self.ico then self.ico:SetTextureColor( clr ) end
+	if self.ico_scope then self.ico_scope:SetTextureColor( clr ) end
+	if self.ico_sil then self.ico_sil:SetTextureColor( clr ) end
+	if self.ico_gl then self.ico_gl:SetTextureColor( clr ) end
+	if self.layer then
+		for i=1,#self.layer do
+			self.layer[i]:SetTextureColor( clr )
+		end
+	end
+
+end
+
+
+--[[
+	Use
+	
+	local table_of_itmes_to_tint = {vodka = true}
+	local bags = {actor_bag = true,actor_trade_bag= true} --player inv in normal/looting and in the merchant UI. full list in ui_inventory.script
+	function tinter(cell)
+		if not bags[cell.container.ID] then return end -- if you only want this to be applied in the inventory UI and then only certine parts
+		if table_of_itmes_to_tint[cell.section] then --for object id use cell.ID ID not used in all UIs
+			return GetARGB(100, 0, 255, 0)
+		end
+	end
+
+	
+	function on_game_start()
+		rax_icon_tint.register("my_tint", tinter)
+	end
+
+	
+	
+	
+--]]
